@@ -52,12 +52,15 @@ async function initDb() {
         PRIMARY KEY (user_id, skill_id)
       )
     `;
+    console.log("✅ Database tables checked/created successfully");
   } catch (error) {
-    console.error("Database initialization failed:", error);
+    console.error("❌ Database initialization failed:", error);
+
+    process.exit(1);
   }
 }
-
-app.listen(process.env.PORT, async () => {
-  await initDb();
-  console.log(`Auth service is running at port ${process.env.PORT}`);
+initDb().then(() => {
+  app.listen(process.env.PORT, async () => {
+    console.log(`Auth service is running at port ${process.env.PORT}`);
+  });
 });
