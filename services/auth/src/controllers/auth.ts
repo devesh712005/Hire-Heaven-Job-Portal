@@ -6,6 +6,8 @@ import bcrypt from "bcrypt";
 import getBuffer from "../utils/buffer.js";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import { forgotPasswordTemplate } from "../utils/template.js";
+import { publishToTopic } from "../producer.js";
 
 export const registerUser = TryCatch(async (req, res, next) => {
   const { name, email, password, phoneNumber, role, bio } = req.body;
@@ -90,5 +92,40 @@ export const loginUser = TryCatch(async (req, res, next) => {
     message: "User Loggedin",
     userObject,
     token,
+  });
+});
+
+export const forgotPassword = TryCatch(async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    throw new ErrorHandler(400, "Email is required");
+  }
+  const users =
+    await sql`SELECT user_id,email FROM users WHERE email = ${email}`;
+  if (users.length === 0) {
+    return res.json({
+      message: "If that email exists, we have sent a reset link",
+    });
+  }
+  const user = users[0];
+  const resetToken = jwt.sign(
+    {
+      email: user.email,
+      type: "reset",
+    },
+    process.env.JWT_SEC as string,
+    { expiresIn: "15m" },
+  );
+  const resetLink = `${process.env.Frontend_Url}/reset/${resetToken}`;
+  const message = {
+    to: email,
+    subject: "RESET Your Password - HireHeaven",
+    html: forgotPasswordTemplate(resetLink),
+  };
+  publishToTopic("send-mail", message).catch((error) => {
+    console.log("Failed to send message", error);
+  });
+  res.json({
+    message: "If that email exists, we have sent a reset link",
   });
 });
