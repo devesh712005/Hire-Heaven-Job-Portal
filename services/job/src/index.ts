@@ -65,12 +65,18 @@ subscribed BOOLEAN,
 UNIQUE(job_id, applicant_id)
 )
 `;
-    console.log("Job service database tables checked and craeted succesfully.");
+    console.log(
+      "✅ Job service database tables checked and craeted succesfully.",
+    );
   } catch (error) {
     console.log("Error while creating tables", error);
     process.exit(1);
   }
 }
-app.listen(process.env.PORT, () => {
-  console.log(`Job service is running on http://localhost:${process.env.PORT}`);
+initDB().then(() => {
+  app.listen(process.env.PORT, () => {
+    console.log(
+      `✅ Job service is running on http://localhost:${process.env.PORT}`,
+    );
+  });
 });
