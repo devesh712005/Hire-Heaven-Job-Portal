@@ -57,3 +57,63 @@ export const createCompany = TryCatch(
     });
   },
 );
+
+export const deleteCompany = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+    const { companyId } = req.params;
+    const [company] = await sql`
+    SELECT logo_public_id FROM companies WHERE company_id = ${companyId} AND recruiter_id = ${user?.user_id}
+    `;
+    if (!company) {
+      throw new ErrorHandler(
+        404,
+        "Company not found or you are not authorised to delete it",
+      );
+    }
+    await sql`
+    DELETE FROM companies
+    WHERE company_id = ${companyId}
+    `;
+    res.json({
+      message: "Company and all associated job are deleted",
+    });
+  },
+);
+
+export const createJob = TryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
+  if (!user) {
+    throw new ErrorHandler(401, "Authentication required");
+  }
+  if (user.role !== "recruiter") {
+    throw new ErrorHandler(403, "Forbidden: Only recruiter can create company");
+  }
+  const {
+    title,
+    description,
+    salary,
+    location,
+    role,
+    job_type,
+    work_location,
+    company_id,
+    openings,
+  } = req.body;
+  if (!title || !description || !salary || !location || !role || !openings) {
+    throw new ErrorHandler(400, "All the feilds required");
+  }
+  const [company] =
+    await sql`SELECT company_id FROM companies WHERE company_id =${company_id} AND recruiter_id = ${user.user_id}`;
+  if (!company) {
+    throw new ErrorHandler(404, "Company not found");
+  }
+
+  const [newJob] = await sql`
+    INSERT INTO jobs (title,description,salary,location,role,job_type,work_location,company_id,posted_by_recruiter_id,openings) VALUES (${title},${description},${salary},${location},${role},${job_type},${work_location},${company_id},${user.user_id},${openings}) RETURNING * `;
+
+  res.json({
+    message: "Job posted succesfully",
+    job: newJob,
+  });
+});
