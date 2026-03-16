@@ -232,3 +232,11 @@ export const applyForJob = TryCatch(async (req: AuthenticatedRequest, res) => {
     application: newApplication,
   });
 });
+
+export const getAllapplication = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const application =
+      await sql`SELECT a.*,j.title AS job_title AS job_salary,j.location AS job_location FROM applications a JOIN jobs j ON a.job_id = j.job_id WHERE applicant_id = ${req.user?.user_id}`;
+    res.json(application);
+  },
+);
