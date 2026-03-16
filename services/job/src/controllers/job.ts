@@ -169,3 +169,33 @@ export const updateJob = TryCatch(async (req: AuthenticatedRequest, res) => {
     updateJob,
   });
 });
+
+export const getAllCompany = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const companies = await sql`
+  SELECT * FROM companies WHERE recruiter_id = ${req.user?.user_id};
+  `;
+    res.json(companies);
+  },
+);
+
+export const getCompanyDetails = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const { id } = req.params;
+    if (!id) {
+      throw new ErrorHandler(400, "Company id is required");
+    }
+    const [companyData] = await sql`
+  SELECT c.*, COALESCE(
+  (
+    SELECT json_agg(j.*) FROM jobs j WHERE j.company_id = c.company_id
+  ),
+  '[]'::json)
+  AS jobs
+  FROM companies c WHERE c.company_id = ${id} GROUP BY c.company_id;`;
+    if (!companyData) {
+      throw new ErrorHandler(404, "Commpany not found");
+    }
+    res.json(companyData);
+  },
+);
