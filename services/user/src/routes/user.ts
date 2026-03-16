@@ -2,7 +2,9 @@ import express from "express";
 import { isAuth } from "../middlewares/auth.js";
 import {
   addSkillToUser,
+  applyForJob,
   deleteSkillFromUser,
+  getAllapplication,
   getUserProfile,
   myprofile,
   updateProfilePic,
@@ -18,4 +20,6 @@ router.put("/update/pic", isAuth, uploadFile, updateProfilePic);
 router.put("/update/resume", isAuth, uploadFile, updateResume);
 router.post("/skill/add", isAuth, addSkillToUser);
 router.delete("/skill/delete", isAuth, deleteSkillFromUser);
+router.post("/apply/job", isAuth, applyForJob);
+router.get("/application/all", isAuth, getAllapplication);
 export default router;
