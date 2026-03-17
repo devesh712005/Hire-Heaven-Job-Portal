@@ -10,6 +10,7 @@ import {
   getAllCompany,
   getCompanyDetails,
   getSingleJob,
+  updateApplication,
   updateJob,
 } from "../controllers/job.js";
 const router = express.Router();
@@ -22,5 +23,5 @@ router.get("/company/:id", isAuth, getCompanyDetails);
 router.get("/all", getAllActiveJobs);
 router.get("/:jobId", getSingleJob);
 router.get("/application/:jobId", isAuth, getAllApplicationForJob);
-
+router.put("/application/update/:id", isAuth, updateApplication);
 export default router;
