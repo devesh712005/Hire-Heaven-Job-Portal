@@ -96,4 +96,88 @@ Mastery', 'DevOps & Cloud').",
       }));
   }
 });
+
+router.post("/resume-analyzer", async (req, res) => {
+  try {
+    const { pdfBase64 } = req.body;
+
+    if (!pdfBase64) {
+      return res.status(400).json({ message: "Pdf data is required" });
+    }
+
+    const prompt = `
+You are an expert ATS (Applicant Tracking System) analyzer. Analyze the following resume
+and provide:
+1. An ATS compatibility score (0-100)
+2. Detailed suggestions to improve the resume for better ATS performance
+
+Your entire response must be in valid JSON format. Do not include any text or markdown outside JSON.
+
+{
+  "atsScore": 85,
+  "scoreBreakdown": {
+    "formatting": { "score": 90, "feedback": "" },
+    "keywords": { "score": 80, "feedback": "" },
+    "structure": { "score": 85, "feedback": "" },
+    "readability": { "score": 88, "feedback": "" }
+  },
+  "suggestions": [
+    {
+      "category": "",
+      "issue": "",
+      "recommendation": "",
+      "priority": "high/medium/low"
+    }
+  ],
+  "strengths": [],
+  "summary": ""
+}
+`;
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            { text: prompt },
+            {
+              inlineData: {
+                mimeType: "application/pdf",
+                data: pdfBase64.replace(/^data:application\/pdf;base64,/, ""),
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    let jsonResponse;
+
+    try {
+      const rawText = response.text
+        ?.replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+      if (!rawText) {
+        throw new Error("AI did not return valid text");
+      }
+
+      jsonResponse = JSON.parse(rawText);
+    } catch (err) {
+      return res.status(500).json({
+        message: "AI returned invalid JSON",
+        rawResponse: response.text,
+      });
+    }
+
+    res.json(jsonResponse);
+  } catch (error: any) {
+    console.error("RESUME ANALYZER ERROR:", error);
+    res.status(500).json({
+      message: error.message || "Internal server error",
+    });
+  }
+});
+
 export default router;
