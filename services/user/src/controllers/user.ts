@@ -235,7 +235,7 @@ export const applyForJob = TryCatch(async (req: AuthenticatedRequest, res) => {
 
 export const getAllapplication = TryCatch(
   async (req: AuthenticatedRequest, res) => {
-    const application = await sql`
+    const applications= await sql`
 SELECT 
   a.*,
   j.title AS job_title,
@@ -245,6 +245,6 @@ FROM applications a
 JOIN jobs j ON a.job_id = j.job_id
 WHERE a.applicant_id = ${req.user?.user_id}
 `;
-    res.json(application);
+    res.json(applications);
   },
 );
