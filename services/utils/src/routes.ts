@@ -97,7 +97,7 @@ Mastery', 'DevOps & Cloud').",
   }
 });
 
-router.post("/resume-analyzer", async (req, res) => {
+router.post("/resume-analyser", async (req, res) => {
   try {
     const { pdfBase64 } = req.body;
 
