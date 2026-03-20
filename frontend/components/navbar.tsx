@@ -21,7 +21,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const isAuth = false;
+  const isAuth = true;
   const logoutHandler = () => {};
 
   return (
@@ -147,7 +147,7 @@ const Navbar = () => {
 
               <Button
                 variant="destructive"
-                className="w-full justify-start gap-3"
+                className="w-full justify-start gap-3 bg-red-600 text-white hover:bg-red-400"
                 onClick={() => {
                   logoutHandler();
                   toggleMenu();
