@@ -258,21 +258,23 @@ const CarrerGuide = () => {
                         <BookOpen size={20} className="text-blue-600" />
                         {response.learningApproach.title}
                       </h3>
+                      <ul className="space-y-2">
+                        {response.learningApproach.points.map(
+                          (point, index) => (
+                            <li
+                              key={index}
+                              className="text-sm flex items-start gap-2"
+                            >
+                              <span className="text-blue-600 mt-0.5">•</span>
+                              <span
+                                className="opacity-90"
+                                dangerouslySetInnerHTML={{ __html: point }}
+                              />
+                            </li>
+                          ),
+                        )}
+                      </ul>
                     </div>
-                    <ul className="space-y-2">
-                      {response.learningApproach.points.map((point, index) => (
-                        <li
-                          key={index}
-                          className="text-sm flex items-start gap-2"
-                        >
-                          <span className="text-blue-600 mt-0.5">•</span>
-                          <span
-                            className="opacity-90"
-                            dangerouslySetInnerHTML={{ __html: point }}
-                          />
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                   <Button
                     onClick={resetDialog}

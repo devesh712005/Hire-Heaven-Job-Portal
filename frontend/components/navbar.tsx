@@ -56,12 +56,12 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Right */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 ">
             {isAuth ? (
               <Popover>
                 <PopoverTrigger asChild>
                   <button>
-                    <Avatar className="h-9 w-9">
+                    <Avatar className="h-9 w-9 ">
                       <AvatarFallback>D</AvatarFallback>
                     </Avatar>
                   </button>
