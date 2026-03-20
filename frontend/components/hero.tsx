@@ -1,4 +1,4 @@
-import { ArrowRight, Search, TrendingUp } from "lucide-react";
+import { ArrowRight, Briefcase, Search, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { Button } from "./ui/button";
@@ -66,6 +66,37 @@ const Hero = () => {
                   />
                 </Button>
               </Link>
+              <Link href={"/about"}>
+                <Button
+                  variant={"outline"}
+                  size={"lg"}
+                  className="text-base pz-8 h-12 gap-2"
+                >
+                  <Briefcase size={18} />
+                  Learn more
+                </Button>
+              </Link>
+            </div>
+            {/* trust indicator */}
+            <div className="flex items-center gap-2 text-sm opacity-60 pt-4">
+              <span>✔️ Free to use</span>
+              <span>•</span>
+              <span>✔️ Verified employers</span>
+              <span>•</span>
+              <span>✔️ Secured platform</span>
+            </div>
+          </div>
+          {/* image section */}
+          <div className="flex-1 relative">
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-blue-400 opacity-20 blur-xl group-hover:opacity-30 transition-opacity"></div>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-background">
+                <img
+                  src="/hero.jpg"
+                  className="object-cover object-center w-full h-full transform transition-transform duration-500 group-hover:scale-105"
+                  alt=""
+                />
+              </div>
             </div>
           </div>
         </div>
