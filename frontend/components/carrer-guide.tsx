@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import React, { useState } from "react";
-import { CareerGuideResponse, utils_service } from "./type";
+import { CareerGuideResponse } from "./type";
 import axios from "axios";
 import {
   Dialog,
@@ -24,6 +24,7 @@ import {
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import { utils_service } from "@/app/context/AppContext";
 const CarrerGuide = () => {
   const [open, setOpen] = useState(false);
   const [skills, setSkills] = useState<string[]>([]);

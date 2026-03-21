@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { ResumeAnalysisResponse } from "./type";
-import { utils_service } from "./type";
+import { utils_service } from "@/app/context/AppContext";
 // import toast from "react-hot-toast";
 const ResumeAnalyzer = () => {
   const [open, setOpen] = useState(false);

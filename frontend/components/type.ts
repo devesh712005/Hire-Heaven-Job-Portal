@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface JobOptions {
   title: string;
   responsibilities: string;
@@ -45,4 +47,32 @@ export interface ResumeAnalysisResponse {
   strengths: string[];
   summary: string;
 }
-export const utils_service = "http://localhost:5001";
+
+export interface User {
+  user_id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+  role: "jobseeker" | "recruiter";
+  bio: string | null; //recruiter dont have
+  resume: string | null; //recruiter dont have
+  resume_public_id: string | null;
+  profile_pic: string | null;
+  profile_pic_public_id: string | null;
+  skills: string[];
+  subscription: string | null;
+}
+
+export interface AppContextType {
+  user: User | null;
+  loading: boolean;
+  btnLoading: boolean;
+  isAuth: boolean;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface AppProviderProps {
+  children: ReactNode;
+}
