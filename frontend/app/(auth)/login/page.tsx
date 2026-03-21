@@ -33,7 +33,7 @@ const Login = () => {
         secure: true,
         path: "/",
       });
-      setUser(data.user);
+      setUser(data.userObject);
       setIsAuth(true);
     } catch (error: any) {
       toast.error(error.response.data.message);
