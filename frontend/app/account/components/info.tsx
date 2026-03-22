@@ -1,9 +1,60 @@
 import { AccountProps } from "@/components/type";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Briefcase, FileText, Mail } from "lucide-react";
-import React, { use } from "react";
+import {
+  Briefcase,
+  Camera,
+  FileText,
+  Mail,
+  NotepadText,
+  Phone,
+} from "lucide-react";
+import Link from "next/link";
+import { forbidden } from "next/navigation";
+import React, { ChangeEvent, use, useRef, useState } from "react";
 
 const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
+  const [btnLoading, setBtnLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const editRef = useRef<HTMLInputElement | null>(null);
+  const resumeRef = useRef<HTMLInputElement | null>(null);
+
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [bio, setBio] = useState("");
+
+  const handleClick = () => {
+    inputRef.current?.click();
+  };
+
+  const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+    }
+  };
+
+  const handleEditClick = () => {
+    editRef.current?.click();
+    setName(user.name);
+    setPhoneNumber(user.phone_number);
+    setBio(user.bio || "");
+  };
+
+  const updateProfileHandler = () => {};
+  const changeResume = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== "application/pdf") {
+        alert("Please upload a pdf file");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("file", file);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <Card className="overflow-hidden shadow-lg border-2">
@@ -17,7 +68,26 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              {/* Edit option for your account */}
+              {/* Edit option for your Profile pic */}
+              {isYourAccount && (
+                <>
+                  <Button
+                    variant={"secondary"}
+                    size={"icon"}
+                    onClick={handleClick}
+                    className="absolute bottom-0 right-0 rounded-full h-10 w-10 shadow-lg"
+                  >
+                    <Camera size={18} />
+                  </Button>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    ref={inputRef}
+                    onChange={changeHandler}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -62,8 +132,43 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
                   <p className="text-sm truncate">{user.email}</p>
                 </div>
               </div>
+
+              <div className="flex items-center gap-3 p-4 rounded-lg border hover:border-blue-500 transition-colors">
+                <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                  <Phone size={18} className="text-blue-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs opacity-70 font-medium">Phone</p>
+                  <p className="text-sm truncate">{user.phone_number}</p>
+                </div>
+              </div>
             </div>
           </div>
+          {/* resume section */}
+          {user.role === "jobseeker" && user.resume && (
+            <div className="mt-8 ">
+              <h2 className="text-lg font-semibold mt-4 flex items-center gap-2">
+                <NotepadText size={20} className="text-blue-600" />
+                Resume
+              </h2>
+              <div className="flex items-center gap-3 p-4 rounded-lg border hover:border-blue-500 transition-colors">
+                <div className="h-12 w-12 rounded-lg bg-red-100 dark:bg-red-900 flex items-center justify-center">
+                  <NotepadText size={20} className="text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium ">Resume Document</p>
+                  <Link
+                    href={user.resume}
+                    className="text-sm text-blue-500 hover:underline"
+                    target="_blank"
+                  >
+                    View Resume PDF
+                  </Link>
+                </div>
+                {/* Edit button */}
+              </div>
+            </div>
+          )}
         </div>
       </Card>
     </div>
