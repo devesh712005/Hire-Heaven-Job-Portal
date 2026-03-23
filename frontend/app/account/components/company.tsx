@@ -15,7 +15,7 @@ const Company = () => {
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
   const [logo, setLogo] = useState<File | null>(null);
-  const [bgnLoading, setBtnLoading] = useState("");
+  const [btnLoading, setBtnLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
   const clearData = () => {
     setName("");
@@ -45,27 +45,45 @@ const Company = () => {
     formData.append("description", description);
     formData.append("website", website);
     formData.append("file", logo);
-  }
-  try {
-    setBtnLoading(true);
-    const { data } = await axios.post(
-      `${job_service}/api/job/add/company`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+
+    try {
+      setBtnLoading(true);
+      const { data } = await axios.post(
+        `${job_service}/api/job/add/company`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      },
-    );
-    toast.success(data.message);
-    clearData();
-    fetchCompanies();
-  } catch (error: any) {
-    toast.error(error.response.data.message);
-  } finally {
-    setBtnLoading(false);
+      );
+      toast.success(data.message);
+      clearData();
+      fetchCompanies();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setBtnLoading(false);
+    }
   }
 
+  async function deleteCompany(id: string) {
+    try {
+      setBtnLoading(true);
+      const { data } = await axios.delete(
+        `${job_service}/api/job/company/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      toast.success(data.message);
+      fetchCompanies();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setBtnLoading(false);
+    }
+  }
   useEffect(() => {
     fetchCompanies();
   }, []);
