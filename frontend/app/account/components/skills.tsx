@@ -2,21 +2,25 @@
 import { useAppData } from "@/app/context/AppContext";
 import { AccountProps } from "@/components/type";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Award, Plus, Sparkle } from "lucide-react";
+import { Award, Plus, Sparkle, X } from "lucide-react";
 import React, { useState } from "react";
 
 const Skills: React.FC<AccountProps> = ({ user, isYourAccount }) => {
-  const { addSkill, btnLoading } = useAppData();
+  const { addSkill, btnLoading, removeSkill } = useAppData();
   const [skill, setSkill] = useState("");
   const addSkillHandler = () => {
     if (!skill.trim()) {
       alert("Please enter a skill");
       return;
     }
-    addSkill(skill);
-    setSkill("");
+    addSkill(skill, setSkill);
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -25,6 +29,7 @@ const Skills: React.FC<AccountProps> = ({ user, isYourAccount }) => {
   };
   const removeSKillHandler = (skillToRemove: string) => {
     if (confirm(`Are you sure you want to remove ${skillToRemove} ?`)) {
+      removeSkill(skillToRemove);
     }
   };
   return (
@@ -72,6 +77,32 @@ const Skills: React.FC<AccountProps> = ({ user, isYourAccount }) => {
             </Button>
           </div>
         )}
+
+        {/* Skill Display */}
+        <CardContent className="p-6">
+          {user.skills && user.skills.length > 0 ? (
+            <div className="flex flex-wrap gap-3">
+              {user.skills.map((e, i) => (
+                <div
+                  key={i}
+                  className="group relative inline-flex items-center gap-2 border-2 rounded-full hover:shadow-sm duration-200 transition-all pl-4 pr-3 py-2"
+                >
+                  <span className="font-medium text-sm">{e}</span>
+                  {isYourAccount && (
+                    <button
+                      onClick={() => removeSKillHandler(e)}
+                      className="h-6 w-6 rounded-full text-red-500 flex items-center justify-evenly trasition-all hover:bg-gray-300 hover:scale-110"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <></>
+          )}
+        </CardContent>
       </Card>
     </div>
   );
