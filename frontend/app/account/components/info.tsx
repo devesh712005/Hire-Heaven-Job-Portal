@@ -1,37 +1,53 @@
+import { useAppData } from "@/app/context/AppContext";
 import { AccountProps } from "@/components/type";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
   Briefcase,
   Camera,
+  Edit,
   FileText,
   Mail,
   NotepadText,
   Phone,
+  UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { forbidden } from "next/navigation";
 import React, { ChangeEvent, use, useRef, useState } from "react";
 
 const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
-  const [btnLoading, setBtnLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const editRef = useRef<HTMLInputElement | null>(null);
+  const editRef = useRef<HTMLButtonElement | null>(null);
   const resumeRef = useRef<HTMLInputElement | null>(null);
 
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
+  const { updateProfilePic, btnLoading, updateUser } = useAppData();
+  if (!user) return null;
 
   const handleClick = () => {
     inputRef.current?.click();
   };
 
-  const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const changeHandler = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
+      await updateProfilePic(formData);
     }
   };
 
@@ -42,7 +58,12 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
     setBio(user.bio || "");
   };
 
-  const updateProfileHandler = () => {};
+  const updateProfileHandler = () => {
+    updateUser(name, phoneNumber, bio);
+  };
+  const handleResumeClick = () => {
+    resumeRef?.current?.click();
+  };
   const changeResume = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -52,6 +73,7 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
       }
       const formData = new FormData();
       formData.append("file", file);
+      updateResume(formData);
     }
   };
 
@@ -63,8 +85,11 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
             <div className="relative group">
               <div className="w-32 h-32 rounded-full border-4 border-background overflow-hidden shadow-xl bg-background">
                 <img
-                  src={user.profile_pic ? user.profile_pic : "/avatar.jpg"}
-                  alt=""
+                  src={
+                    user.profile_pic
+                      ? `${user.profile_pic}?t=${Date.now()}`
+                      : "/avatar.jpg"
+                  }
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -97,7 +122,17 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
             <div className="space-y-1">
               <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-bold ">{user.name}</h1>
-                {/* Edit */}
+                {/* Edit Button*/}
+                {isYourAccount && (
+                  <Button
+                    variant={"ghost"}
+                    size={"icon"}
+                    className="h-8 w-8 "
+                    onClick={handleEditClick}
+                  >
+                    <Edit size={16} />
+                  </Button>
+                )}
               </div>
               <div className="flex items-center gap-2 text-sm opacity-70">
                 <Briefcase size={16} />
@@ -166,11 +201,104 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
                   </Link>
                 </div>
                 {/* Edit button */}
+                <Button
+                  variant={"outline"}
+                  size={"sm"}
+                  onClick={handleResumeClick}
+                  className="gap-2"
+                >
+                  Update
+                </Button>
+                <input
+                  type="file"
+                  ref={resumeRef}
+                  className="hidden"
+                  accept="application/pdf"
+                  onChange={changeResume}
+                />
               </div>
             </div>
           )}
         </div>
       </Card>
+      {/* dialog box for edit */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button ref={editRef} variant={"outline"} className="hidden">
+            Edit Profile
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Edit Profile</DialogTitle>
+            <div className="space-y-5 py-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="name"
+                  className="text-sm font-medium flex items-center gap-2"
+                >
+                  <UserIcon size={16} />
+                  Full Name
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  className="h-11"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="phone"
+                  className="text-sm font-medium flex items-center gap-2"
+                >
+                  <Phone size={16} />
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  type="number"
+                  placeholder="Enter your Phone Number"
+                  className="h-11"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+              {user.role === "jobseeker" && (
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="bio"
+                    className="text-sm font-medium flex items-center gap-2"
+                  >
+                    <FileText size={16} />
+                    Bio
+                  </Label>
+                  <Input
+                    id="bio"
+                    type="text"
+                    placeholder="Enter your Bio"
+                    className="h-11"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                  />
+                </div>
+              )}
+              <DialogFooter>
+                <Button
+                  disabled={btnLoading}
+                  onClick={updateProfileHandler}
+                  className="w-full h-11"
+                  type="submit"
+                >
+                  {btnLoading ? "Saving Changes..." : "Save Changes"}
+                </Button>
+              </DialogFooter>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

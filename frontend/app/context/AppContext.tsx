@@ -30,7 +30,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUser(data);
+      setUser({ ...data });
       setIsAuth(true);
     } catch (error) {
       console.log(error);
@@ -39,11 +39,94 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setLoading(false);
     }
   }
+
+  async function updateProfilePic(fromData: any) {
+    setLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${user_service}/api/user/update/pic`,
+        fromData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(data.message);
+      await fetchUser();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateResume(fromData: any) {
+    setLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${user_service}/api/user/update/resume`,
+        fromData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(data.message);
+      await fetchUser();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateUser(name: string, phoneNumber: string, bio: string) {
+    setbtnLoading(true);
+    try {
+      const { data } = await axios.put(
+        `${user_service}/api/user/update/profile`,
+        { name, phoneNumber, bio },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(data.message);
+      fetchUser();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setbtnLoading(false);
+    }
+  }
   async function logoutUser() {
     Cookies.set("token", "");
     setUser(null);
     setIsAuth(false);
     toast.success("Logged out successfully");
+  }
+  async function addSkill(skill: string) {
+    setbtnLoading(true);
+    try {
+      const data = await axios.post(
+        `${user_service}/api/user/skill/add`,
+        { skillName: skill },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(data.data.message);
+      fetchUser();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setbtnLoading(false);
+    }
   }
   useEffect(() => {
     fetchUser();
@@ -59,6 +142,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setIsAuth,
         setLoading,
         logoutUser,
+        updateProfilePic,
+        updateResume,
+        updateUser,
+        addSkill,
       }}
     >
       {children}
