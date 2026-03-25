@@ -4,12 +4,32 @@ import Loading from "@/components/loading";
 import { Company as CompanyType } from "@/components/type";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Building2, Eye, Globe, Link, Plus } from "lucide-react";
+import {
+  Briefcase,
+  Building2,
+  Eye,
+  EyeIcon,
+  FileText,
+  Globe,
+  Image,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-
 const Company = () => {
   const { loading } = useAppData();
   const addRef = useRef<HTMLButtonElement | null>(null);
@@ -46,7 +66,7 @@ const Company = () => {
       return alert("Please provide all details");
     }
     const formData = new FormData();
-    formData.append("title", name);
+    formData.append("name", name);
     formData.append("description", description);
     formData.append("website", website);
     formData.append("file", logo);
@@ -54,7 +74,7 @@ const Company = () => {
     try {
       setBtnLoading(true);
       const { data } = await axios.post(
-        `${job_service}/api/job/add/company`,
+        `${job_service}/api/job/company/new`,
         formData,
         {
           headers: {
@@ -73,20 +93,22 @@ const Company = () => {
   }
 
   async function deleteCompany(id: string) {
-    try {
-      setBtnLoading(true);
-      const { data } = await axios.delete(
-        `${job_service}/api/job/company/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      toast.success(data.message);
-      fetchCompanies();
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-    } finally {
-      setBtnLoading(false);
+    if (confirm("Are you sure you want to delete this company")) {
+      try {
+        setBtnLoading(true);
+        const { data } = await axios.delete(
+          `${job_service}/api/job/company/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        toast.success(data.message);
+        fetchCompanies();
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      } finally {
+        setBtnLoading(false);
+      }
     }
   }
   useEffect(() => {
@@ -156,18 +178,132 @@ const Company = () => {
                         size={"icon"}
                         className="h-9 w-9"
                       >
-                        <Eye size={16} />
+                        <EyeIcon size={16} />
                       </Button>
                     </Link>
+                    <Button
+                      variant={"destructive"}
+                      size={"icon"}
+                      className="h-9 w-9"
+                      onClick={() => deleteCompany(c.company_id)}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <></>
+            <>
+              <div className="text-center py-12 ">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 mb-4 ">
+                  <Building2 size={32} className="opacity-40" />
+                </div>
+                <CardDescription className="text-base mb-4 ">
+                  No Companies Registered Yet
+                </CardDescription>
+                <p className="text-sm opacity-60 ">
+                  Add Your First Company To Start Posting Job
+                </p>
+              </div>
+            </>
           )}
         </div>
       </Card>
+      {/* Add company dialog */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className="hidden" ref={addRef}></Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[550]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <Building2 className="text-blue-600" />
+              Add New Company
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-5 py-4">
+            <div className="space-y-2">
+              <Label
+                htmlFor="name"
+                className="text-sm font-medium flex items-center gap-2"
+              >
+                <Briefcase size={16} />
+                Company Name
+              </Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter company name"
+                className="h-11"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="description"
+                className="text-sm font-medium flex items-center gap-2"
+              >
+                <FileText size={16} />
+                Description
+              </Label>
+              <Input
+                id="description"
+                type="text"
+                placeholder="Enter Description"
+                className="h-11"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="website"
+                className="text-sm font-medium flex items-center gap-2"
+              >
+                <Globe size={16} />
+                Website
+              </Label>
+              <Input
+                id="website"
+                type="text"
+                placeholder="Enter Description"
+                className="h-11"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="logo"
+                className="text-sm font-medium flex items-center gap-2"
+              >
+                <Image size={16} />
+                Company Logo
+              </Label>
+              <Input
+                id="logo"
+                type="file"
+                placeholder="image/*"
+                className="h-11 cursor-pointer"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setLogo(e.target.files?.[0] || null)
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              disabled={btnLoading}
+              onClick={addCompanyHandler}
+              className="w-full h-11"
+            >
+              {btnLoading ? "Adding Company..." : "Add Company"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
