@@ -10,8 +10,9 @@ import Loading from "@/components/loading";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Globe } from "lucide-react";
+import { Briefcase, Globe, Plus } from "lucide-react";
 import toast from "react-hot-toast";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
 const CompanyPage = () => {
   const { id } = useParams();
@@ -200,6 +201,39 @@ const CompanyPage = () => {
               </div>
             </div>
           </Card>
+
+          <Dialog>
+            {/* Job section */}
+            <Card className="shadow-lg border-2 overflow-hidden">
+              <div className="bg-blue-600 border-b p-6 ">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                      <Briefcase size={20} className="text-blue-600" />
+                    </div>
+                  </div>
+                  <h2 className="text-2xl font-bold text-white">
+                    Open Positions
+                  </h2>
+                  <p className="text-sm opacity-70 text-white">
+                    {company.jobs?.length || 0} active job
+                    {company.jobs?.length !== 1 ? "s" : ""}
+                  </p>
+                </div>
+              </div>
+
+              {isRecruiterOwner && (
+                <>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2">
+                      <Plus size={18} />
+                      Post New Job
+                    </Button>
+                  </DialogTrigger>
+                </>
+              )}
+            </Card>
+          </Dialog>
         </div>
       )}
     </div>
