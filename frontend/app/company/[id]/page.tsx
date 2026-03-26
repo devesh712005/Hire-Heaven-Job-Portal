@@ -10,9 +10,24 @@ import Loading from "@/components/loading";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Briefcase, Globe, Plus } from "lucide-react";
+import {
+  Briefcase,
+  Building2,
+  DollarSign,
+  FileText,
+  Globe,
+  Plus,
+} from "lucide-react";
 import toast from "react-hot-toast";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const CompanyPage = () => {
   const { id } = useParams();
@@ -230,6 +245,82 @@ const CompanyPage = () => {
                       Post New Job
                     </Button>
                   </DialogTrigger>
+                  <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl flex-items-center gap-2">
+                        Post a new Job
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-5 py-4">
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="title"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <Briefcase size={16} />
+                          Job Title
+                        </Label>
+                        <Input
+                          id="title"
+                          type="text"
+                          placeholder="Enter Job Title"
+                          className="h-11"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="description"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <FileText size={16} />
+                          Description
+                        </Label>
+                        <Input
+                          id="description"
+                          type="text"
+                          placeholder="Enter Description"
+                          className="h-11"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="role"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <Building2 size={16} />
+                          Role/Department
+                        </Label>
+                        <Input
+                          id="role"
+                          type="text"
+                          placeholder="Enter Job Role"
+                          className="h-11"
+                          value={role}
+                          onChange={(e) => setRole(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="salary"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <DollarSign size={16} />
+                          Salary
+                        </Label>
+                        <Input
+                          id="salary"
+                          type="text"
+                          placeholder="Enter salary"
+                          className="h-11 cursor-pointer"
+                          onChange={(e) => setSalary(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </DialogContent>
                 </>
               )}
             </Card>

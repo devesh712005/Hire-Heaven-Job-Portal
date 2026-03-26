@@ -285,7 +285,7 @@ const Company = () => {
               <Input
                 id="logo"
                 type="file"
-                placeholder="image/*"
+                accept="image/*"
                 className="h-11 cursor-pointer"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setLogo(e.target.files?.[0] || null)
