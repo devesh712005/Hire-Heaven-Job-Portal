@@ -13,21 +13,34 @@ import { Button } from "@/components/ui/button";
 import {
   Briefcase,
   Building2,
+  Clock,
   DollarSign,
   FileText,
   Globe,
+  Laptop,
+  MapPin,
   Plus,
+  Users,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CompanyPage = () => {
   const { id } = useParams();
@@ -313,13 +326,113 @@ const CompanyPage = () => {
                         </Label>
                         <Input
                           id="salary"
-                          type="text"
+                          type="number"
                           placeholder="Enter salary"
                           className="h-11 cursor-pointer"
+                          value={salary}
                           onChange={(e) => setSalary(e.target.value)}
                         />
                       </div>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="openings"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <Users size={16} />
+                          Openings
+                        </Label>
+                        <Input
+                          id="openings"
+                          type="number"
+                          placeholder="Eg. 5"
+                          className="h-11 cursor-pointer"
+                          value={openings}
+                          onChange={(e) => setOpenings(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="location"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <MapPin size={16} />
+                          Location
+                        </Label>
+                        <Input
+                          id="location"
+                          type="text"
+                          placeholder="Enter Location"
+                          className="h-11 cursor-pointer"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                        />
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="job_type"
+                            className="text-sm font-medium flex items-center gap-1"
+                          >
+                            <Clock size={16} />
+                            Job Type
+                          </Label>
+                          <Select value={job_type} onValueChange={setJob_type}>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select Job Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="full-time">
+                                Full-time
+                              </SelectItem>
+                              <SelectItem value="Part-time">
+                                Part-time
+                              </SelectItem>
+                              <SelectItem value="Contract">Contract</SelectItem>
+                              <SelectItem value="Internship">
+                                Internship
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="work_location"
+                            className="text-sm font-medium flex items-center gap-1"
+                          >
+                            <Laptop size={16} />
+                            Work Location
+                          </Label>
+                          <Select
+                            value={work_location}
+                            onValueChange={setWork_location}
+                          >
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select Work Location" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="On-site">On-site</SelectItem>
+                              <SelectItem value="Remote">Remote</SelectItem>
+                              <SelectItem value="Hybrid">Hybrid</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button ref={addModalRef} variant={"outline"}>
+                          Cancel
+                        </Button>
+                      </DialogClose>
+                      <Button
+                        disabled={btnLoading}
+                        onClick={addJobHandler}
+                        className="gap-2 "
+                      >
+                        {btnLoading ? "Posting Job..." : "Post Job"}
+                      </Button>
+                    </DialogFooter>
                   </DialogContent>
                 </>
               )}
