@@ -10,6 +10,7 @@ import {
 } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Application } from "express";
 export const utils_service = "http://localhost:5001";
 export const auth_service = "http://localhost:5000";
 export const user_service = "http://localhost:5002";
@@ -149,8 +150,46 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       toast.error(error.response.data.message);
     }
   }
+
+  async function applyJob(job_id: number) {
+    setbtnLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${user_service}/api/user/apply/job`,
+        { job_id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      toast.success(data.message);
+      fetchApplications();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setbtnLoading(false);
+    }
+  }
+  const [applications, setApplications] = useState<Application[] | null>(null);
+  async function fetchApplications() {
+    try {
+      const { data } = await axios.get(
+        `${user_service}/api/user/application/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setApplications(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   useEffect(() => {
     fetchUser();
+    fetchApplications();
   }, []);
   return (
     <AppContext.Provider
@@ -168,6 +207,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateUser,
         addSkill,
         removeSkill,
+        applyJob,
+        applications,
+        fetchApplications,
       }}
     >
       {children}

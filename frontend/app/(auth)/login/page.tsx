@@ -15,7 +15,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
-  const { isAuth, setUser, loading, setIsAuth } = useAppData();
+  const { isAuth, setUser, loading, setIsAuth, fetchApplications } =
+    useAppData();
   if (isAuth) {
     return redirect("/");
   }
@@ -35,6 +36,7 @@ const Login = () => {
       });
       setUser(data.userObject);
       setIsAuth(true);
+      fetchApplications();
     } catch (error: any) {
       console.log("LOGIN ERROR 👉", error);
       console.log("RESPONSE 👉", error?.response);
