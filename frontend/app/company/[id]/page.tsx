@@ -12,7 +12,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Globe } from "lucide-react";
 import toast from "react-hot-toast";
-import { headers } from "next/headers";
 
 const CompanyPage = () => {
   const { id } = useParams();
@@ -36,7 +35,6 @@ const CompanyPage = () => {
     fetchCompany();
   }, [id]);
 
-  if (loading) return <Loading />;
   const isRecruiterOwner =
     user && company && user.user_id === company.recruiter_id;
   const [isUpdatedModalOpen, setIsUpdatedModalOpen] = useState(false);
@@ -93,49 +91,48 @@ const CompanyPage = () => {
       setBtnLoading(false);
     }
   };
-  const deleteHandler = async (jobId:number) => {
-    if(confirm("Are you sure you want to delete this job?")){
-        setBtnLoading(true);
-        try {
-            await axios.delete(`${job_service}/api/job/${jobId}`,{
-                headers:{
-                    Authorization:`Bearer ${token}`
-                }
-            })
-            toast.success("Job has been deleted");
-            fetchCompany();
-        } catch (error:any) {
-            toast.error(error.response.data.message);
-        }finally{
-            setBtnLoading(false);
-        }
+  const deleteHandler = async (jobId: number) => {
+    if (confirm("Are you sure you want to delete this job?")) {
+      setBtnLoading(true);
+      try {
+        await axios.delete(`${job_service}/api/job/${jobId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.success("Job has been deleted");
+        fetchCompany();
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      } finally {
+        setBtnLoading(false);
+      }
     }
-
   };
 
-  const handleOpenUpdateModal = (job:Job) =>{
-    setSelectedJob(job)
-    setTitle(job.title)
-    setDescription(job.description)
-    setRole(job.role)
-    setSalary(String(job.salary || ""))
-    setLocation(job.location || "")
-    setOpenings(String(job.openings ))
-    setJob_type(job.job_type)
-    setWork_location(job.work_location)
-    setIs_active(job.is_active)
-    setIsUpdatedModalOpen(true)
+  const handleOpenUpdateModal = (job: Job) => {
+    setSelectedJob(job);
+    setTitle(job.title);
+    setDescription(job.description);
+    setRole(job.role);
+    setSalary(String(job.salary || ""));
+    setLocation(job.location || "");
+    setOpenings(String(job.openings));
+    setJob_type(job.job_type);
+    setWork_location(job.work_location);
+    setIs_active(job.is_active);
+    setIsUpdatedModalOpen(true);
   };
-  const handleCloseUpdateModal = () =>{
+  const handleCloseUpdateModal = () => {
     setIsUpdatedModalOpen(false);
-    setSelectedJob(null)
+    setSelectedJob(null);
     clearInput();
-  }
-  const updateJobHandler = async() =>{
-    if(!selectedJob) return;
-    setBtnLoading(true)
+  };
+  const updateJobHandler = async () => {
+    if (!selectedJob) return;
+    setBtnLoading(true);
     try {
-        const updateData = {
+      const updateData = {
         title,
         description,
         role,
@@ -144,23 +141,28 @@ const CompanyPage = () => {
         openings: Number(openings),
         job_type,
         work_location,
-        is_active
-      }
-      await axios.put(`${job_service}/api/job/${selectedJob.job_id}`,updateData,{
-        headers:{
-            Authorization:`Bearer ${token}`
-        }
-      })
+        is_active,
+      };
+      await axios.put(
+        `${job_service}/api/job/${selectedJob.job_id}`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
       toast.success("Job updated successfully");
-      fetchCompany()
-      handleCloseUpdateModal()
-
-    } catch (error :any) {
-        toast.error(error.response.data.message)
-    }finally{
-        setBtnLoading(false)
+      fetchCompany();
+      handleCloseUpdateModal();
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      setBtnLoading(false);
     }
-  }
+  };
+  if (loading) return <Loading />;
+
   return (
     <div className="min-h-screen bg-secondary/30">
       {company && (
