@@ -48,5 +48,21 @@ export const paymentVerification = TryCatch(
       .update(body)
       .digest("hex");
     const isAuthentic = expectedSignature === razorpay_signature;
+    if (isAuthentic) {
+      const now = new Date();
+      const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
+      const expiryDate = new Date(now.getTime() + thirtyDays);
+      const [updatedUser] = await sql`UPDATE users 
+        SET subscription = ${expiryDate} WHERE user_id = ${user?.user_id} RETURNING *`;
+      res.json({
+        message: "Subscription Purchased Successfully",
+        updatedUser,
+      });
+    } else {
+      res.status(400).json({
+        message: "Payment failed",
+      });
+    }
   },
 );
