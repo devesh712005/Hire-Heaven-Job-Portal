@@ -39,7 +39,8 @@ const Info: React.FC<AccountProps> = ({ user, isYourAccount }) => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bio, setBio] = useState("");
-  const { updateProfilePic, btnLoading, updateUser } = useAppData();
+  const { updateProfilePic, btnLoading, updateUser, updateResume } =
+    useAppData();
   if (!user) return null;
 
   const handleClick = () => {

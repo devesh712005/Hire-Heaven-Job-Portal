@@ -213,7 +213,7 @@ const RegisterPage = () => {
             <p className="text-center text-sm">
               Already have an account?{""}
               <Link
-                href={"/register"}
+                href={"/login"}
                 className="text-blue-500 font-medium hover:underline transition-all"
               >
                 &nbsp;Login

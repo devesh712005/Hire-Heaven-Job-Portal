@@ -172,7 +172,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       setbtnLoading(false);
     }
   }
-  const [applications, setApplications] = useState<Application[] | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
   async function fetchApplications() {
     try {
       const { data } = await axios.get(
