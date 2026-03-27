@@ -6,7 +6,27 @@ import getBuffer from "../utils/buffer.js";
 import axios from "axios";
 export const myprofile = TryCatch(
   async (req: AuthenticatedRequest, res, next) => {
-    const user = req.user;
+    const userId = req.user?.user_id;
+
+    const users = await sql`
+SELECT 
+  u.user_id,
+  u.name,
+  u.email,
+  u.phone_number,
+  u.role,
+  u.bio,
+  u.resume,
+  u.profile_pic,
+  COALESCE(ARRAY_AGG(s.name) FILTER (WHERE s.name IS NOT NULL), '{}') AS skills
+FROM users u
+LEFT JOIN user_skills us ON u.user_id = us.user_id
+LEFT JOIN skills s ON us.skill_id = s.skill_id
+WHERE u.user_id = ${userId}
+GROUP BY u.user_id;
+`;
+
+    const user = users[0];
     res.json(user);
   },
 );
@@ -235,7 +255,7 @@ export const applyForJob = TryCatch(async (req: AuthenticatedRequest, res) => {
 
 export const getAllapplication = TryCatch(
   async (req: AuthenticatedRequest, res) => {
-    const applications= await sql`
+    const applications = await sql`
 SELECT 
   a.*,
   j.title AS job_title,
