@@ -30,7 +30,7 @@ const locations: string[] = [
   "Remote",
 ];
 
-const JobPage = () => {
+const JobsPage = () => {
   const [loading, setLoading] = useState(true);
   const [jobs, setJobs] = useState<Job>([]);
   const [title, setTitle] = useState("");
@@ -85,7 +85,7 @@ const JobPage = () => {
               <Filter size={18} />
               Filters
               {hasActiveFilters && (
-                <span className="ml-1 px-2 py-0.5 rounded-full bg-red-500 text-white text-xs">
+                <span className="ml-1 px-2 py-0.5 rounded-full bg-green-500 text-white text-xs">
                   Active
                 </span>
               )}
@@ -210,4 +210,4 @@ const JobPage = () => {
   );
 };
 
-export default JobPage;
+export default JobsPage;

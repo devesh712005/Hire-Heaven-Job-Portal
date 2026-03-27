@@ -69,7 +69,7 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
       </CardHeader>
       <CardContent className="flex flex-col gap-3 pt-4 border-t">
         <div className="flex w-full gap-2 ">
-          <Link href={`/job/${job.job_id}`} className="flex-1">
+          <Link href={`/jobs/${job.job_id}`} className="flex-1">
             <Button variant={"outline"} className="w-full gap-2 group/btn">
               View Details{" "}
               <ArrowRight
