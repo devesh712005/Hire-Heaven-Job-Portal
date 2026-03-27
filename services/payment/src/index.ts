@@ -12,9 +12,10 @@ export const instance = new Razorpay({
 });
 
 const app = express();
-app.use("/api/payment", paymentRoutes);
 app.use(cors());
 app.use(express.json());
+app.use("/api/payment", paymentRoutes);
+
 app.listen(process.env.PORT, () => {
   console.log(`Payment service is running on ${process.env.PORT}`);
 });

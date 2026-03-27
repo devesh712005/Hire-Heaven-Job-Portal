@@ -18,6 +18,7 @@ SELECT
   u.bio,
   u.resume,
   u.profile_pic,
+  u.subscription,
   COALESCE(ARRAY_AGG(s.name) FILTER (WHERE s.name IS NOT NULL), '{}') AS skills
 FROM users u
 LEFT JOIN user_skills us ON u.user_id = us.user_id
