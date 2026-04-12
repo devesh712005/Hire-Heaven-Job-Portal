@@ -76,8 +76,8 @@ const Navbar = () => {
                     ring-blue-500/20 cursor-pointer hover:ring-blue-500/40 transition-all"
                         >
                           <AvatarImage
-                            src={user ? (user.profile_pic as string) : ""}
-                            alt={user ? user.name : ""}
+                            src={user?.profile_pic || undefined}
+                            alt={user?.name || "user"}
                           />
                           <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600">
                             {user?.name?.charAt(0).toUpperCase() || "U"}

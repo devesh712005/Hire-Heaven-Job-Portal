@@ -183,7 +183,7 @@ const JobsPage = () => {
                   id="location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full h-11 px-3 border-2 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring2"
+                  className="w-full h-11 px-3 border-2 border-gray-300 rounded-md bg-transparent focus:outline-none focus:ring2 dark:bg-black"
                 >
                   <option value="">All Locations</option>
                   {locations.map((e) => (

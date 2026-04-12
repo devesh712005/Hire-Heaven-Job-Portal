@@ -82,7 +82,7 @@ const RegisterPage = () => {
                   id="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full h-11 pl-10 pr-4 border-2 border-gray-300 rounded-md bg-transparent "
+                  className="w-full h-11 pl-10 pr-4 border-2 border-gray-300 rounded-md bg-transparent dark:bg-black  "
                   required
                 >
                   <option value="">Select your role</option>
