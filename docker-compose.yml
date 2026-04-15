@@ -2,16 +2,17 @@ version: "3.8"
 
 services:
   frontend:
-    image: devesh712005/frontend:latest
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_RAZORPAY_KEY: ${NEXT_PUBLIC_RAZORPAY_KEY}
     ports:
       - "3000:3000"
-    env_file:
-      - ./env/frontend.env
     restart: always
     depends_on:
       - auth
-      - job
       - user
+      - job
 
   auth:
     image: devesh712005/auth:latest
@@ -22,14 +23,6 @@ services:
     restart: always
     depends_on:
       - kafka
-
-  utils:
-    image: devesh712005/utils:latest
-    ports:
-      - "5001:5001"
-    env_file:
-      - ./env/utils.env
-    restart: always
 
   user:
     image: devesh712005/user:latest
@@ -61,6 +54,14 @@ services:
     depends_on:
       - kafka
 
+  utils:
+    image: devesh712005/utils:latest
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./env/utils.env
+    restart: always
+
   kafka:
     image: apache/kafka:4.1.0
     container_name: kafka
@@ -74,6 +75,8 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     restart: always
