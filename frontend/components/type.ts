@@ -81,7 +81,7 @@ export interface AppContextType {
   ) => Promise<void>;
   removeSkill: (skill: string) => Promise<void>;
   applyJob: (job_id: number) => Promise<void>;
-  applications: Application;
+  applications: Application[];
   fetchApplications: () => Promise<void>;
 }
 

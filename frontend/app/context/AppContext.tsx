@@ -1,6 +1,11 @@
 "use client";
 import toast, { Toaster } from "react-hot-toast";
-import { AppContextType, AppProviderProps, User } from "@/components/type";
+import {
+  AppContextType,
+  AppProviderProps,
+  User,
+  Application,
+} from "@/components/type";
 import {
   Children,
   createContext,
@@ -10,13 +15,13 @@ import {
 } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Application } from "express";
-export const utils_service = "http://localhost:5001";
-export const auth_service = "http://localhost:5000";
-export const user_service = "http://localhost:5002";
-export const job_service = "http://localhost:5003";
-export const payment_service = "http://localhost:5004";
+const BASE_URL = "https://tech-devesh.in";
 
+export const utils_service = BASE_URL;
+export const auth_service = BASE_URL;
+export const user_service = BASE_URL;
+export const job_service = BASE_URL;
+export const payment_service = BASE_URL;
 const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

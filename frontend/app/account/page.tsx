@@ -40,7 +40,11 @@ const AccountPage = () => {
 
           {/* ✅ safer rendering */}
           {user.role === "jobseeker" && applications && (
-            <AppliedJobs applications={applications} />
+            <AppliedJobs
+              applications={
+                Array.isArray(applications) ? applications : [applications]
+              }
+            />
           )}
 
           {user.role === "recruiter" && <Company />}

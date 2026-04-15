@@ -32,7 +32,7 @@ const locations: string[] = [
 
 const JobsPage = () => {
   const [loading, setLoading] = useState(true);
-  const [jobs, setJobs] = useState<Job>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const token = Cookies.get("token");
