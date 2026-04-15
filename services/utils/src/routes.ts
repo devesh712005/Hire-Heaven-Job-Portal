@@ -1,24 +1,32 @@
 import express from "express";
 import cloudinary from "cloudinary";
+import multer from "multer";
+const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
-router.post("/upload", async (req, res) => {
+router.post("/upload", upload.single("file"), async (req, res) => {
   try {
-    const { buffer, public_id } = req.body;
-    if (public_id) {
-      await cloudinary.v2.uploader.destroy(public_id);
+    const file = (req as any).file;
+
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
-    const cloud = await cloudinary.v2.uploader.upload(buffer, {
-      resource_type: "auto",
-    });
+
+    const result = await cloudinary.v2.uploader.upload(
+      `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+      {
+        resource_type: "auto",
+      },
+    );
+
     res.json({
-      url: cloud.secure_url,
-      public_id: cloud.public_id,
+      url: result.secure_url,
+      public_id: result.public_id,
     });
   } catch (error: any) {
-    (console.error("UPLOAD ERROR:", error),
-      res.status(500).json({
-        message: error.message,
-      }));
+    console.error("UPLOAD ERROR:", error);
+    res.status(500).json({
+      message: error.message,
+    });
   }
 });
 import { GoogleGenAI } from "@google/genai";

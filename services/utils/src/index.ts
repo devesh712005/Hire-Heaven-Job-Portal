@@ -5,7 +5,7 @@ import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 import { startSendMailConsumer } from "./consumer.js";
 dotenv.config();
-startSendMailConsumer();
+startSendMailConsumer().catch(console.error);
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,

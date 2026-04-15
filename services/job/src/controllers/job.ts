@@ -302,9 +302,12 @@ export const updateApplication = TryCatch(
       subject: "Application Update - Job portal",
       html: applicationStatusUpdateTemplate(job.title),
     };
-    publishToTopic("send-mail", message).catch((error) => {
-      console.error("Failed to publish message to kafka", error);
-    });
+    try {
+      await publishToTopic("send-mail", message);
+      console.log("✅ Message sent to Kafka");
+    } catch (error) {
+      console.error("❌ Kafka publish failed", error);
+    }
     res.json({
       message: "Application updated",
       job,
