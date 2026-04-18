@@ -2,7 +2,21 @@ import app from "./app.js";
 import dotenv from "dotenv";
 import { sql } from "./utils/db.js";
 import { createClient } from "redis";
+import promClient from "prom-client";
 dotenv.config();
+const register = promClient.register;
+
+promClient.collectDefaultMetrics();
+
+// metrics route
+app.get("/metrics", async (req, res) => {
+  try {
+    res.set("Content-Type", register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
 export const redisClient = createClient({ url: process.env.Redis_url });
 redisClient
   .connect()
