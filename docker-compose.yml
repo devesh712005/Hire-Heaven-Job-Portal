@@ -85,3 +85,11 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
     restart: always
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    restart: always
