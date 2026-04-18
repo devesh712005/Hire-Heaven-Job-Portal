@@ -27,7 +27,8 @@ jobs:
             fi
 
             cd Hire-Heaven-Job-Portal
-            git pull
 
-            docker-compose down
-            docker-compose up -d --build
+            git fetch origin
+            git reset --hard origin/main
+
+            docker-compose up -d --build --remove-orphans
