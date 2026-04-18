@@ -3,20 +3,17 @@ import cloudinary from "cloudinary";
 import multer from "multer";
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
-router.post("/upload", upload.single("file"), async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
-    const file = (req as any).file;
+    const { buffer } = req.body;
 
-    if (!file) {
-      return res.status(400).json({ message: "No file uploaded" });
+    if (!buffer) {
+      return res.status(400).json({ message: "No file data received" });
     }
 
-    const result = await cloudinary.v2.uploader.upload(
-      `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
-      {
-        resource_type: "auto",
-      },
-    );
+    const result = await cloudinary.v2.uploader.upload(buffer, {
+      resource_type: "auto",
+    });
 
     res.json({
       url: result.secure_url,
