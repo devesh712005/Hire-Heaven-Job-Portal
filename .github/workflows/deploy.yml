@@ -33,13 +33,17 @@ jobs:
             git fetch origin
             git reset --hard origin/main
 
-            docker-compose down
-
+            docker system prune -a -f || true
             docker builder prune -a -f || true
 
-            docker-compose build --no-cache
+            docker-compose down --remove-orphans || true
 
+            docker rm -f $(docker ps -aq) || true
+
+            docker-compose build --no-cache
 
             docker-compose up -d
 
             docker image prune -f
+
+            docker ps
