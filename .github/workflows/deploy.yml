@@ -20,6 +20,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
+            set -e
+
             cd /home/ubuntu
 
             if [ ! -d "Hire-Heaven-Job-Portal" ]; then
@@ -31,4 +33,14 @@ jobs:
             git fetch origin
             git reset --hard origin/main
 
-            docker-compose up -d --build --remove-orphans
+            # ✅ STOP containers (DO NOT REMOVE VOLUMES)
+            docker-compose down
+
+            # ✅ BUILD ONLY CHANGED SERVICES (faster)
+            docker-compose build
+
+            # ✅ START containers
+            docker-compose up -d
+
+            # ✅ OPTIONAL CLEANUP (SAFE)
+            docker image prune -f
