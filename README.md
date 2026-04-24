@@ -7,8 +7,6 @@ A production-grade microservices-based job portal with real-time features, AI in
 ## 🌐 Live Links
 
 * 🔗 Project: https://tech-devesh.in
-* 📊 Grafana: https://tech-devesh.in/grafana
-* 📈 Prometheus: https://tech-devesh.in/prometheus
 
 ---
 
