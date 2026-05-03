@@ -19,7 +19,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ./env/auth.env
+      - ../env/auth.env
     restart: always
     depends_on:
       - kafka
@@ -29,7 +29,7 @@ services:
     ports:
       - "5001:5001"
     env_file:
-      - ./env/utils.env
+      - ../env/utils.env
     restart: always
 
   user:
@@ -37,7 +37,7 @@ services:
     ports:
       - "5002:5002"
     env_file:
-      - ./env/user.env
+      - ../env/user.env
     restart: always
     depends_on:
       - kafka
@@ -47,7 +47,7 @@ services:
     ports:
       - "5003:5003"
     env_file:
-      - ./env/job.env
+      - ../env/job.env
     restart: always
     depends_on:
       - kafka
@@ -57,7 +57,7 @@ services:
     ports:
       - "5004:5004"
     env_file:
-      - ./env/payment.env
+      - ../env/payment.env
     restart: always
     depends_on:
       - kafka
@@ -71,9 +71,9 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -86,7 +86,7 @@ services:
     container_name: prometheus
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus # ✅ persist metrics
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
     restart: always
@@ -97,9 +97,9 @@ services:
     ports:
       - "3001:3000"
     depends_on:
-      - prometheus # ✅ removed loki
+      - prometheus
     volumes:
-      - grafana_data:/var/lib/grafana # ✅ dashboards persist
+      - grafana_data:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin

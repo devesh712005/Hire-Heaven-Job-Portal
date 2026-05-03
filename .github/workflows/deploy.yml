@@ -1,49 +1,52 @@
 name: CI/CD Deploy to EC2
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+- main
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+build-and-deploy:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+```
+steps:
+  - name: Checkout Code
+    uses: actions/checkout@v3
 
-      - name: Deploy Via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            set -e
+  - name: Deploy via SSH (Safe Deploy)
+    uses: appleboy/ssh-action@v1.0.3
+    with:
+      host: ${{ secrets.SSH_HOST }}
+      username: ubuntu
+      key: ${{ secrets.SSH_KEY }}
+      script: |
+        set -e
 
-            cd /home/ubuntu
+        echo "🚀 Starting Deployment..."
 
-            if [ ! -d "Hire-Heaven-Job-Portal" ]; then
-              git clone https://github.com/devesh712005/Hire-Heaven-Job-Portal.git
-            fi
+        cd /home/ubuntu
 
-            cd Hire-Heaven-Job-Portal
+        if [ ! -d "Hire-Heaven-Job-Portal" ]; then
+          git clone https://github.com/devesh712005/Hire-Heaven-Job-Portal.git
+        fi
 
-            git fetch origin
-            git reset --hard origin/main
+        cd Hire-Heaven-Job-Portal
 
-            docker system prune -a -f || true
-            docker builder prune -a -f || true
+        echo "📥 Pulling latest code..."
+        git pull origin main
 
-            docker-compose down --remove-orphans || true
+        echo "🛑 Stopping old containers..."
+        docker-compose down
 
-            docker rm -f $(docker ps -aq) || true
+        echo "🔨 Building (with cache for speed)..."
+        docker-compose build
 
-            docker-compose build --no-cache
+        echo "🚀 Starting services..."
+        docker-compose up -d
 
-            docker-compose up -d
+        echo "🧹 Cleaning unused images (SAFE)..."
+        docker image prune -f
 
-            docker image prune -f
-
-            docker ps
+        echo "✅ Deployment Complete!"
+        docker ps
