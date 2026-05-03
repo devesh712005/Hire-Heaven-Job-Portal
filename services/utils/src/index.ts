@@ -65,7 +65,7 @@ app.use((req, res, next) => {
         method: req.method,
         route,
         status: res.statusCode,
-        service: "utils", // ✅ FIXED
+        service: "utils",
       },
       duration,
     );

@@ -84,7 +84,7 @@ Mastery', 'DevOps & Cloud').",
         .replace(/```/g, "")
         .trim();
       if (!rawText) {
-        throw new Error("Ai did not return a valid text response.");
+        throw new Error("Ai did not return a valid text responsee.");
       }
       jsonReponse = JSON.parse(rawText);
     } catch (error) {
